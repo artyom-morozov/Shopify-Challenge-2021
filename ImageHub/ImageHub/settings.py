@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from decouple import config
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -38,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'api.apps.ApiConfig',
-    'rest_framework'
+    'rest_framework',
+    'frontend.apps.FrontendConfig',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -118,5 +121,21 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
+
+
+# Amazon S3 Bucket personal-project-bucket
+AWS_ACCESS_KEY_ID = 'AKIAW6V2BD4R2ZB2ENKV'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'personal-project-bucket'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+AWS_LOCATION = 'static'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+
+DEFAULT_FILE_STORAGE = 'ImageHub.storage_backends.MediaStorage'
 
 STATIC_URL = '/static/'
