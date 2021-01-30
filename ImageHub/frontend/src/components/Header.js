@@ -6,15 +6,23 @@ import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import InputBase from '@material-ui/core/InputBase';
 import Badge from '@material-ui/core/Badge';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import Popover from '@material-ui/core/Popover';
+import Grid from '@material-ui/core/Grid';
+import CartPage from './CartPage.js';
+import Button from "@material-ui/core/Button";
+import { Link, useHistory } from 'react-router-dom';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Paper from '@material-ui/core/Paper';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import PropTypes from 'prop-types';
+
+
 
 const useStyles = makeStyles((theme) => ({
     grow: {
@@ -72,10 +80,27 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
       },
     },
+    typography: {
+        padding: theme.spacing(2),
+      },
   }));
 
 export default function Header(props){
     const classes = useStyles();
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const history = useHistory();
+
+
+    const handleProfileClick = (e) => {
+        setAnchorEl(e.currentTarget);
+    }
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    }
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
 
     return (
           <AppBar position="static">
@@ -106,19 +131,51 @@ export default function Header(props){
               </div>
               <div className={classes.grow} />
               <div className={classes.sectionDesktop}>
-                <IconButton aria-label="show 4 new mails" color="inherit">
-                  <Badge badgeContent={2} color="secondary">
-                    <ShoppingCartIcon />
-                  </Badge>
+                <IconButton
+                    aria-label="open cart page" color="inherit"
+                    onClick={() => history.push("/cart")}
+                    >
+                    <Badge badgeContent={17} color="secondary">
+                        <ShoppingCartIcon />
+                    </Badge>
                 </IconButton>
+                
                 <IconButton
                   edge="end"
                   aria-label="account of current user"
                   aria-haspopup="true"
                   color="inherit"
+                  onClick={handleProfileClick}
                 >
                   <AccountCircle />
                 </IconButton>
+                <Popover
+                    id={id}
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                    }}
+                >
+                    <Grid
+                        container
+                        direction="column"
+                    >
+                        <Grid item xs={12}>
+                            <Typography className={classes.typography}>Profile</Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography onClick={props.logout} className={classes.typography}>Logout</Typography>
+                        </Grid>
+
+                    </Grid>
+                </Popover>
               </div>
             </Toolbar>
           </AppBar>
